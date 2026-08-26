@@ -154,3 +154,150 @@ plt.ylabel("Salary")
 
 plt.tight_layout()
 plt.show()
+
+
+print("\n===Department Statistics===")
+
+department_stats=employees.groupby("department")["salary"].agg(
+    ["count","mean","max","min"]
+)
+
+print(department_stats)
+
+print("\n====Pivot Table=====")
+
+pivot=pd.pivot_table(
+    employees,
+    values="salary",
+    index="department",
+    aggfunc=["mean","max","min"]
+)
+
+print(pivot)
+
+print("\n=== SALARY BOX PLOT ===")
+
+plt.boxplot(employees["salary"])
+
+plt.title("Salary Distribution")
+plt.ylabel("Salary")
+
+plt.show()
+
+print("\n ====Salary By Department====")
+
+departments=[
+    employees[employees["department"]=="Finance"]["salary"],
+    employees[employees["department"]=="HR"]["salary"],
+    employees[employees["department"]=="IT"]["salary"]
+]
+
+plt.boxplot(departments,tick_labels=["Finance","HR","IT"])
+
+plt.title("Salary Distribution by Department")
+plt.xlabel("Department")
+plt.ylabel("Salary")
+
+plt.show()
+
+print("\n=== CORRELATION MATRIX ===")
+
+correlation_matrix = employees[
+    ["age", "experience", "salary"]
+].corr()
+
+print(correlation_matrix)
+
+print("\n=== CORRELATION HEATMAP ===")
+
+plt.imshow(correlation_matrix)
+
+plt.xticks(
+    range(len(correlation_matrix.columns)),
+    correlation_matrix.columns
+)
+
+plt.yticks(
+    range(len(correlation_matrix.columns)),
+    correlation_matrix.columns
+)
+# Display correlation values inside the cells
+for i in range(len(correlation_matrix)):
+    for j in range(len(correlation_matrix.columns)):
+        plt.text(
+            j,
+            i,
+            f"{correlation_matrix.iloc[i, j]:.2f}",
+            ha="center",
+            va="center"
+        )
+
+plt.colorbar(label="Correlation")
+
+plt.title("Correlation Heatmap")
+
+plt.show()
+
+print("\n=== MULTI-COLUMN DEPARTMENT ANALYSIS ===")
+
+department_analysis = employees.groupby("department").agg({
+    "age": ["mean", "min", "max"],
+    "experience": ["mean", "min", "max"],
+    "salary": ["mean", "min", "max"]
+})
+
+print(department_analysis)
+
+# ============================================================
+# FLATTEN MULTI-LEVEL COLUMNS
+# ============================================================
+
+department_analysis.columns = [
+    "_".join(column)
+    for column in department_analysis.columns
+]
+
+print("\n=== FLATTENED DEPARTMENT ANALYSIS ===")
+print(department_analysis.to_string())
+
+print("\n=== DEPARTMENTS RANKED BY AVERAGE SALARY ===")
+
+ranked_departments = department_analysis.sort_values(
+    "salary_mean",
+    ascending=False
+)
+
+print(ranked_departments[["salary_mean"]])
+
+print("\n====DEPERETMENT PERCENTAGE====")
+
+department_percentage=(
+    employees["department"]
+    .value_counts(normalize=True)
+    *100
+)
+
+print(department_percentage)
+
+plt.bar(
+    department_percentage.index,
+    department_percentage.values
+)
+
+plt.title("Employee Distribution by Depatment")
+plt.xlabel("Department")
+plt.ylabel("Percentage(%)")
+
+plt.tight_layout()
+plt.show()
+
+print(employees.groupby("department")["salary"].mean().idxmax())
+print(employees.groupby("department")["experience"].mean().idxmax())
+print(employees.groupby("department")["salary"].idxmax())
+print(employees[employees["salary"]>employees["salary"].mean()])
+salary_range = (
+    department_analysis["salary_max"]
+    - department_analysis["salary_min"]
+)
+
+print(salary_range)
