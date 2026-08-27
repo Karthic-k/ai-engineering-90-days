@@ -301,3 +301,30 @@ salary_range = (
 )
 
 print(salary_range)
+
+def average_salary_by_department(employees):
+    return employees.groupby("department")["salary"].mean()
+
+result=average_salary_by_department(employees)
+print(result)
+
+def highest_paid_employee(employees):
+    index=employees["salary"].idxmax()
+    return employees.loc[index]
+
+highest_paid=highest_paid_employee(employees)
+print(highest_paid)
+
+def check_missing_values(employees):
+    return employees.isnull().sum()
+
+missingvalue = check_missing_values(employees)
+print(missingvalue)
+
+def department_statistics(employees):
+    return employees.groupby("department")["salary"].agg(
+        ["count","mean","max","min"]
+    )
+
+statistics=department_statistics(employees)
+print(statistics)
