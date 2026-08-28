@@ -4,35 +4,34 @@ from src.analyzer import (
     highest_paid_employee,
     check_missing_values,
     calculate_correlation,
-    detect_salary_outliers
+    detect_salary_outliers,
+    department_statistics
 )
 def main():
-    employees=pd.read_csv("employee_data.csv")
 
-    result=average_salary_by_department(employees)
-    highest_paid=highest_paid_employee(employees)
-    missing_values=check_missing_values(employees)
-    correlation = calculate_correlation(
-        employees,
-        "experience",
-        "salary"
-    )
-    outliers=detect_salary_outliers(employees)
+    employees = pd.read_csv("employee_data.csv")
+    
+    print("\n=== AVERAGE SALARY BY DEPARTMENT ===")
+    print(average_salary_by_department(employees))
 
-    print("\n ===Average Salary of Each Department===")
-    print(result)
+    print("\n=== HIGHEST PAID EMPLOYEE ===")
+    print(highest_paid_employee(employees))
 
-    print("\n ===Highest Paid Employee===")
-    print(highest_paid)
-
-    print("\n ===Missing Values===")
-    print(missing_values)
+    print("\n=== MISSING VALUES ===")
+    print(check_missing_values(employees))
 
     print("\n=== EXPERIENCE VS SALARY CORRELATION ===")
-    print(correlation)
+    print(calculate_correlation(
+         employees,
+        "experience",
+        "salary"
+    ))
 
     print("\n=== SALARY OUTLIERS ===")
-    print(outliers)
+    print(detect_salary_outliers(employees))
+
+    print("\n=== DEPARTMENT STATISTICS ===")
+    print(department_statistics(employees))
 
 if __name__ == "__main__":
     main()

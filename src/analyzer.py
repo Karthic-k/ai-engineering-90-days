@@ -24,3 +24,8 @@ def detect_salary_outliers(employees):
         (employees["salary"]<lower_bound)|
         (employees["salary"]>upper_bound)
     ]
+
+def department_statistics(employees):
+    return employees.groupby("department")["salary"].agg(
+        ["count","mean","min","max"]
+    )
