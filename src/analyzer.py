@@ -29,3 +29,17 @@ def department_statistics(employees):
     return employees.groupby("department")["salary"].agg(
         ["count","mean","min","max"]
     )
+
+def highest_average_salary_department(employees):
+    return employees.groupby("department")["salary"].mean().idxmax()
+
+
+def salary_range_by_department(employees):
+    return (
+        employees.groupby("department")["salary"].max()
+        - employees.groupby("department")["salary"].min()
+    )
+
+
+def employees_above_average_salary(employees):
+    return employees[employees["salary"] > employees["salary"].mean()]

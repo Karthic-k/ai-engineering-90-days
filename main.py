@@ -5,7 +5,10 @@ from src.analyzer import (
     check_missing_values,
     calculate_correlation,
     detect_salary_outliers,
-    department_statistics
+    department_statistics,
+    highest_average_salary_department,
+    salary_range_by_department,
+    employees_above_average_salary
 )
 def main():
 
@@ -33,5 +36,13 @@ def main():
     print("\n=== DEPARTMENT STATISTICS ===")
     print(department_statistics(employees))
 
+    print("\n=== HIGHEST AVERAGE SALARY DEPARTMENT ===")
+    print(highest_average_salary_department(employees))
+
+    print("\n=== SALARY RANGE BY DEPARTMENT ===")
+    print(salary_range_by_department(employees))
+
+    print("\n=== EMPLOYEES ABOVE AVERAGE SALARY ===")
+    print(employees_above_average_salary(employees))
 if __name__ == "__main__":
     main()
