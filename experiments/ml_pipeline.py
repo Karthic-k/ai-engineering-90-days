@@ -6,7 +6,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
-employees=pd.read_csv("employee_data.csv")
+employees=pd.read_csv("data/employee_data.csv")
 X=employees[["experience","age","department"]]
 y=employees["salary"]
 

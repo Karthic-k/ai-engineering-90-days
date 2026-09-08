@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # 1. LOAD DATASET
 # ============================================================
 
-employees = pd.read_csv("employee_data.csv")
+employees = pd.read_csv("data/employee_data.csv")
 
 print(employees)
 

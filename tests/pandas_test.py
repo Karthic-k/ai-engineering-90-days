@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. LOAD DATASET
 # ============================================================
 
-students = pd.read_csv("students.csv")
+students = pd.read_csv("data/students.csv")
 
 print("\n===== ORIGINAL DATASET =====")
 print(students)

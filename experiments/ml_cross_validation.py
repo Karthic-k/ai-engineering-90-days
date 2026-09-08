@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import cross_val_score
 
-employees=pd.read_csv("employee_data.csv")
+employees=pd.read_csv("data/employee_data.csv")
 
 X = employees[["experience"]]
 

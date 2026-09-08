@@ -17,7 +17,7 @@ def evaluate_model(model, X, y):
 
     return mae.mean(), mae.std()
 
-employees = pd.read_csv("employee_data.csv")
+employees =pd.read_csv("data/employee_data.csv")
 
 y = employees["salary"]
 

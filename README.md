@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ### 4. Run the analyzer
 
-python main.py
+python -m scripts.main
 
 ## Example Analysis
 

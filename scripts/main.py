@@ -12,7 +12,7 @@ from src.analyzer import (
 )
 def main():
 
-    employees = pd.read_csv("employee_data.csv")
+    employees = pd.read_csv("data/employee_data.csv")
     
     print("\n=== AVERAGE SALARY BY DEPARTMENT ===")
     print(average_salary_by_department(employees))
