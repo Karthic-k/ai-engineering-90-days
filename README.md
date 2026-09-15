@@ -27,18 +27,23 @@ The project performs data inspection, department analysis, salary analysis, corr
 ## Project Structure
 
 01-ai-dataset-analyzer/
-|
+├── api/
+│   ├── __init__.py
+│   └── main.py
+├── data/
+│   ├── employee_data.csv
+│   └── students.csv
+├── experiments/
+├── scripts/
+│   ├── __init__.py
+│   └── main.py
 ├── src/
+│   ├── __init__.py
 │   └── analyzer.py
-|
-├── employee_data.csv
-├── main.py
-├── numpy_test.py
-├── pandas_test.py
-├── real_data_test.py
-├── students.csv
+├── tests/
+├── breast_cancer_model.pkl
+├── breast_cancer_pipeline.pkl
 ├── requirements.txt
-├── .gitignore
 └── README.md
 
 ## How to Run
@@ -115,4 +120,43 @@ Through this project, I learned:
 
 Completed as part of my 90-Day AI Engineering learning journey.
 
-Days completed: 1–6
+Days completed: 1–24
+
+## ML Prediction API
+
+This project includes a FastAPI endpoint for making predictions using the saved breast cancer ML pipeline.
+
+### Run the API
+
+From the project root:
+
+```bash
+uvicorn api.main:app --reload
+
+The API will run at:
+
+http://127.0.0.1:8000
+
+API Documentation
+
+FastAPI provides interactive documentation at:
+
+http://127.0.0.1:8000/docs
+
+Prediction Endpoint
+
+POST /predict
+
+The endpoint accepts the 30 breast cancer features as JSON and returns the model prediction.
+
+Example response:
+
+{
+  "prediction": 0,
+  "prediction_label": "malignant"
+}
+API Flow
+
+Raw JSON → FastAPI → Pydantic Validation → Saved ML Pipeline → Prediction → JSON Response
+
+
