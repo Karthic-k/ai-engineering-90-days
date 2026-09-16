@@ -6,3 +6,4 @@ FastAPI
 Pydantic
 Uvicorn
 joblib
+httpx

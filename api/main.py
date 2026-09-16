@@ -2,7 +2,11 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 
-app=FastAPI()
+app = FastAPI(
+    title="Breast Cancer Prediction API",
+    description="ML prediction API powered by FastAPI and a saved scikit-learn pipeline.",
+    version="1.0.0"
+)
 class PredictionInput(BaseModel):
     mean_radius: float
     mean_texture: float
@@ -39,7 +43,11 @@ pipeline=joblib.load("breast_cancer_pipeline.pkl")
 def home():
     return {"message":"ML Prediction API is running"}
 
-@app.post("/predict")
+@app.post(
+    "/predict",
+    summary="Predict breast cancer classification",
+    description="Accepts 30 breast cancer features and returns the model prediction."
+)
 def predict(data: PredictionInput):
     features = [[
         data.mean_radius,
@@ -73,11 +81,30 @@ def predict(data: PredictionInput):
         data.worst_symmetry,
         data.worst_fractal_dimension
     ]]
-    prediction = pipeline.predict(features)
+    try:
+        prediction = pipeline.predict(features)
 
-    result = int(prediction[0])
+        result = int(prediction[0])
 
+        return {
+            "prediction": result,
+            "prediction_label": "malignant" if result == 0 else "benign"
+        }
+
+    except Exception as e:
+         return {
+              "error":"Prediction failed",
+              "details" : str(e)
+         }
+
+
+@app.get(
+    "/health",
+    summary="Check API health",
+    description="Returns the API and ML model status."
+)
+def health_check():
     return {
-        "prediction": result,
-        "prediction_label": "malignant" if result == 0 else "benign"
+        "status": "healthy",
+        "model": "loaded"
     }
