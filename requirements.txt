@@ -7,3 +7,4 @@ Pydantic
 Uvicorn
 joblib
 httpx
+openpyxl
