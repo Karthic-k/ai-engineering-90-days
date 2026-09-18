@@ -57,6 +57,9 @@ def analyze_dataset(df):
 def statistical_summary(df):
     numeric_columns = df.select_dtypes(include="number")
 
+    if numeric_columns.empty:
+        return {}
+
     return numeric_columns.describe().to_dict()
 
 def categorical_summary(df):

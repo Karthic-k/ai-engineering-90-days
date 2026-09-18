@@ -8,10 +8,11 @@ import pandas as pd
 
 from src.loader import load_dataset
 from src.analyzer import run_analysis
+from src.ml import detect_ml_features, train_classification_model
 
 from src.visualizer import (
     plot_numeric_distribution,
-    plot_department_salary,
+    plot_categorical_numeric,
     plot_correlation_heatmap
 )
 
@@ -93,14 +94,111 @@ if uploaded_file is not None:
         )
     st.subheader("Visualizations")
 
-    st.write("### Salary Distribution")
-    fig = plot_numeric_distribution(df, "salary")
+    st.write("### Numeric Distribution")
+
+    numeric_columns = df.select_dtypes(include="number").columns.tolist()
+
+    selected_column = st.selectbox(
+        "Select a numeric column",
+        numeric_columns
+    )
+
+    fig = plot_numeric_distribution(df, selected_column)
     st.pyplot(fig)
 
-    st.write("### Average Salary by Department")
-    fig = plot_department_salary(df)
-    st.pyplot(fig)
+    st.write("### Categorical vs Numeric")
+
+    categorical_columns = df.select_dtypes(
+        include=["object", "category"]
+    ).columns.tolist()
+
+    numeric_columns = df.select_dtypes(
+        include="number"
+    ).columns.tolist()
+
+    if categorical_columns and numeric_columns:
+
+        categorical_column = st.selectbox(
+            "Select categorical column",
+            categorical_columns
+        )
+
+        numeric_column = st.selectbox(
+            "Select numeric column",
+            numeric_columns
+        )
+
+        fig = plot_categorical_numeric(
+            df,
+            categorical_column,
+            numeric_column
+        )
+
+        st.pyplot(fig)
+
+    else:
+        st.info(
+            "This dataset does not contain both categorical "
+            "and numeric columns for this visualization."
+        )
 
     st.write("### Correlation Heatmap")
     fig = plot_correlation_heatmap(df)
     st.pyplot(fig)
+
+    st.subheader("🤖 ML Analysis")
+
+    ml_features = detect_ml_features(df)
+
+    st.write("### Numeric Features")
+    st.write(ml_features["numeric_columns"])
+
+    st.write("### Categorical Features")
+    st.write(ml_features["categorical_columns"])
+
+    target_column = st.selectbox(
+        "Select target column",
+        df.columns
+    )
+
+    st.write("Selected target:", target_column)
+
+    if st.button("Run ML Model"):
+        try:
+            result = train_classification_model(
+                df,
+                target_column
+            )
+
+            st.success("Model trained successfully!")
+
+            st.write("### Model")
+            st.write(type(result["model"]).__name__)
+
+            col1, col2, col3, col4 = st.columns(4)
+
+            col1.metric(
+                "Accuracy",
+                f"{result['accuracy']:.2%}"
+            )
+
+            col2.metric(
+                "Precision",
+                f"{result['precision']:.2%}"
+            )
+
+            col3.metric(
+                "Recall",
+                f"{result['recall']:.2%}"
+            )
+
+            col4.metric(
+                "F1 Score",
+                f"{result['f1']:.2%}"
+            )
+
+            st.write("### Confusion Matrix")
+            st.write(result["confusion_matrix"])
+
+        except ValueError as e:
+            st.error(str(e))

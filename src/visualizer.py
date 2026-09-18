@@ -12,19 +12,20 @@ def plot_numeric_distribution(df, column):
     return fig
 
 
-def plot_department_salary(df):
+def plot_categorical_numeric(df, categorical_column, numeric_column):
     fig, ax = plt.subplots(figsize=(8, 5))
 
-    salary_by_department = df.groupby("department")["salary"].mean()
-    salary_by_department.plot(kind="bar", ax=ax)
+    values = df.groupby(categorical_column)[numeric_column].mean()
+    values.plot(kind="bar", ax=ax)
 
-    ax.set_title("Average Salary by Department")
-    ax.set_xlabel("Department")
-    ax.set_ylabel("Average Salary")
+    ax.set_title(
+        f"Average {numeric_column} by {categorical_column}"
+    )
+    ax.set_xlabel(categorical_column)
+    ax.set_ylabel(f"Average {numeric_column}")
     ax.tick_params(axis="x", rotation=0)
 
     return fig
-
 
 def plot_correlation_heatmap(df):
     numeric_df = df.select_dtypes(include="number")
