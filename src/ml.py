@@ -8,6 +8,10 @@ from sklearn.metrics import (
     f1_score,
     confusion_matrix
 )
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import numpy as np
+
 def detect_ml_features(df):
     numeric_columns = df.select_dtypes(include="number").columns.tolist()
 
@@ -19,6 +23,18 @@ def detect_ml_features(df):
         "numeric_columns": numeric_columns,
         "categorical_columns": categorical_columns
     }
+def detect_problem_type(df, target_column):
+    target = df[target_column]
+
+    unique_values = target.nunique()
+
+    if target.dtype == "object":
+        return "classification"
+
+    if unique_values <= 10 and target.value_counts().min() >= 2:
+        return "classification"
+
+    return "regression"
 
 def train_classification_model(df, target_column):
     data = df.copy()
@@ -70,4 +86,37 @@ def train_classification_model(df, target_column):
         "recall": recall,
         "f1": f1,
         "confusion_matrix": matrix
+    }
+def train_regression_model(df, target_column):
+    data = df.copy()
+
+    X = data.drop(columns=[target_column])
+    y = data[target_column]
+
+    X = X.select_dtypes(include="number")
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        random_state=42
+    )
+
+    model = LinearRegression()
+
+    model.fit(X_train, y_train)
+
+    predictions = model.predict(X_test)
+
+    mae = mean_absolute_error(y_test, predictions)
+    mse = mean_squared_error(y_test, predictions)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_test, predictions)
+
+    return {
+        "model": model,
+        "mae": mae,
+        "mse": mse,
+        "rmse": rmse,
+        "r2": r2
     }

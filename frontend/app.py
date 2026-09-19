@@ -8,8 +8,12 @@ import pandas as pd
 
 from src.loader import load_dataset
 from src.analyzer import run_analysis
-from src.ml import detect_ml_features, train_classification_model
-
+from src.ml import (
+    detect_ml_features,
+    detect_problem_type,
+    train_classification_model,
+    train_regression_model
+)
 from src.visualizer import (
     plot_numeric_distribution,
     plot_categorical_numeric,
@@ -165,40 +169,84 @@ if uploaded_file is not None:
 
     if st.button("Run ML Model"):
         try:
-            result = train_classification_model(
+            problem_type = detect_problem_type(
                 df,
                 target_column
             )
 
-            st.success("Model trained successfully!")
+            st.write("### Problem Type")
+            st.write(problem_type.capitalize())
 
-            st.write("### Model")
-            st.write(type(result["model"]).__name__)
+            if problem_type == "classification":
 
-            col1, col2, col3, col4 = st.columns(4)
+                result = train_classification_model(
+                    df,
+                    target_column
+                )
 
-            col1.metric(
-                "Accuracy",
-                f"{result['accuracy']:.2%}"
-            )
+                st.success("Classification model trained successfully!")
 
-            col2.metric(
-                "Precision",
-                f"{result['precision']:.2%}"
-            )
+                st.write("### Model")
+                st.write(type(result["model"]).__name__)
 
-            col3.metric(
-                "Recall",
-                f"{result['recall']:.2%}"
-            )
+                col1, col2, col3, col4 = st.columns(4)
 
-            col4.metric(
-                "F1 Score",
-                f"{result['f1']:.2%}"
-            )
+                col1.metric(
+                    "Accuracy",
+                    f"{result['accuracy']:.2%}"
+                )
 
-            st.write("### Confusion Matrix")
-            st.write(result["confusion_matrix"])
+                col2.metric(
+                    "Precision",
+                    f"{result['precision']:.2%}"
+                )
+
+                col3.metric(
+                    "Recall",
+                    f"{result['recall']:.2%}"
+                )
+
+                col4.metric(
+                    "F1 Score",
+                    f"{result['f1']:.2%}"
+                )
+
+                st.write("### Confusion Matrix")
+                st.write(result["confusion_matrix"])
+
+            else:
+
+                result = train_regression_model(
+                    df,
+                    target_column
+                )
+
+                st.success("Regression model trained successfully!")
+
+                st.write("### Model")
+                st.write(type(result["model"]).__name__)
+
+                col1, col2, col3, col4 = st.columns(4)
+
+                col1.metric(
+                    "MAE",
+                    f"{result['mae']:.2f}"
+                )
+
+                col2.metric(
+                    "MSE",
+                    f"{result['mse']:.2f}"
+                )
+
+                col3.metric(
+                    "RMSE",
+                    f"{result['rmse']:.2f}"
+                )
+
+                col4.metric(
+                    "R² Score",
+                    f"{result['r2']:.2f}"
+                )
 
         except ValueError as e:
             st.error(str(e))
