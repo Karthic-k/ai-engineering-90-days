@@ -1,6 +1,14 @@
 from src.loader import load_dataset
 from src.analyzer import run_analysis
-from src.ml import train_classification_model,detect_problem_type,train_regression_model
+from src.ml import (
+    detect_ml_features,
+    detect_problem_type,
+    train_classification_model,
+    train_regression_model,
+    compare_classification_models,
+    compare_regression_models
+)
+import pandas as pd
 
 df = load_dataset("data/employee_data.csv")
 
@@ -43,3 +51,37 @@ print("MSE:", regression_result["mse"])
 print("RMSE:", regression_result["rmse"])
 print("R2 Score:", regression_result["r2"])
 
+comparison = compare_classification_models(
+    students,
+    target_column="passed"
+)
+
+print("\n=== MODEL COMPARISON ===")
+
+for model, metrics in comparison["models"].items():
+    print(
+        f"{model}: "
+        f"Mean Accuracy = {metrics['mean_accuracy']:.2%}, "
+        f"Std = {metrics['std_accuracy']:.2%}"
+    )
+
+print("\nBest Model:", comparison["best_model"])
+
+salary = pd.read_csv("data/salary_ml.csv")
+
+comparison = compare_regression_models(
+    salary,
+    target_column="salary"
+)
+
+print("\n=== REGRESSION MODEL COMPARISON ===")
+
+for model, metrics in comparison["models"].items():
+    print(
+        f"{model}: "
+        f"MAE = {metrics['mean_mae']:.2f}, "
+        f"RMSE = {metrics['mean_rmse']:.2f}, "
+        f"R² = {metrics['mean_r2']:.2f}"
+    )
+
+print("\nBest Model:", comparison["best_model"])

@@ -12,7 +12,9 @@ from src.ml import (
     detect_ml_features,
     detect_problem_type,
     train_classification_model,
-    train_regression_model
+    train_regression_model,
+    compare_classification_models,
+    compare_regression_models
 )
 from src.visualizer import (
     plot_numeric_distribution,
@@ -213,7 +215,50 @@ if uploaded_file is not None:
 
                 st.write("### Confusion Matrix")
                 st.write(result["confusion_matrix"])
+                st.subheader("Model Comparison")
 
+                comparison = compare_classification_models(
+                    df,
+                    target_column
+                )
+
+                for name, metrics in comparison["models"].items():
+                    st.write(
+                        f"**{name}**: "
+                        f"{metrics['mean_accuracy']:.2%} ± "
+                        f"{metrics['std_accuracy']:.2%}"
+                    )
+
+                st.subheader("Best Model")
+                st.success(comparison["best_model"])
+            elif problem_type == "regression":
+                st.subheader("Model Comparison")
+
+                comparison = compare_regression_models(
+                    df,
+                    target_column
+                )
+
+                for name, metrics in comparison["models"].items():
+                    st.write(f"### {name}")
+
+                    st.write(
+                        f"MAE: {metrics['mean_mae']:.2f} ± "
+                        f"{metrics['std_mae']:.2f}"
+                    )
+
+                    st.write(
+                        f"RMSE: {metrics['mean_rmse']:.2f} ± "
+                        f"{metrics['std_rmse']:.2f}"
+                    )
+
+                    st.write(
+                        f"R²: {metrics['mean_r2']:.2f} ± "
+                        f"{metrics['std_r2']:.2f}"
+                    )
+
+                st.subheader("Best Model")
+                st.success(comparison["best_model"])
             else:
 
                 result = train_regression_model(
